@@ -1,12 +1,26 @@
 const express = require('express');
 const path = require('path');
 const indexRouter = require('./routes/index');
+const cors = require('cors');
 
 const app = express();
 const PORT = 3000;
 
-// Middleware para tratar JSON
+const allowedOrigins = ['https://mensagempara.com.br'];
+
+
 app.use(express.json());
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST'], // Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Headers permitidos
+}));
 
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
