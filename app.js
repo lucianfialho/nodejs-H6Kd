@@ -6,7 +6,7 @@ const cors = require('cors');
 const app = express();
 const PORT = 3000;
 
-const allowedOrigins = ['https://mensagempara.com.br'];
+const allowedOrigins = ['https://www.mensagempara.com.br'];
 
 
 app.use(express.json());
