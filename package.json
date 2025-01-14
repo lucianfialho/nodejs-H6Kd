@@ -6,6 +6,8 @@
   "author": "alphasec",
   "license": "MIT",
   "dependencies": {
+    "@supabase/supabase-js": "^2.47.13",
+    "dotenv": "^16.4.7",
     "express": "^4.19.2",
     "sharp": "^0.33.5"
   },
