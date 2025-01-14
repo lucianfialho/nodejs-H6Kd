@@ -33,7 +33,7 @@ router.post('/generate-image', async (req, res) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer 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`
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
