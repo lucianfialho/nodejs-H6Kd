@@ -12,9 +12,10 @@ const supabase = createClient(
 
 router.post('/generate-image', async (req, res) => {
   try {
-    const { category, recipient, styles, type } = req.body;
+    const { theme, recipient, styles, type } = req.body;
 
-    if (!category || !recipient || !styles || !type) {
+
+    if (!theme || !recipient || !styles || !type) {
       return res.status(400).json({ error: 'Todos os parâmetros são obrigatórios.' });
     }
 
