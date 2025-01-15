@@ -2,7 +2,7 @@ const express = require('express');
 
 const sharp = require('sharp');
 const router = express.Router();
-
+const crypto = require("crypto");
 const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config()
 
