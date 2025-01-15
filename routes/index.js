@@ -10,7 +10,7 @@ const supabase = createClient(
   process.env.SUPABASE_URL, // URL do Supabase
   process.env.SUPABASE_SERVICE_ROLE_KEY // Chave de Serviço do Supabase
 );
-console.log(process.env.OPENAI_API_KEY)
+
 router.post('/generate-image', async (req, res) => {
   try {
     const { category, recipient, gender, styles, type } = req.body;
