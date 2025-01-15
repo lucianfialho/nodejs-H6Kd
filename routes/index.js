@@ -86,6 +86,11 @@ router.post('/generate-image', async (req, res) => {
         {
           input: Buffer.from(`
             <svg width="600" height="500" xmlns="http://www.w3.org/2000/svg">
+              <style>
+                text {
+                  font-family: 'Arial', sans-serif;
+                }
+              </style>
               <rect x="0" y="0" width="600" height="500" fill="rgba(0, 0, 0, 0.5)" />
               <text x="50%" y="30%" font-size="24" fill="white" text-anchor="middle" style="font-family: Arial, sans-serif;">
                 ${splitTextIntoLines(message, 40)
