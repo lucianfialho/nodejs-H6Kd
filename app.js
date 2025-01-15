@@ -20,6 +20,7 @@ app.use(cors({
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+console.log(indexRouter)
 
 // Registra o roteador principal
 app.use('/', indexRouter);
