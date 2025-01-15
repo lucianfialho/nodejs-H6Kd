@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
-const indexRouter = require('./routes/index');
 const cors = require('cors');
+const indexRouter = require('./routes/index'); // Importa o roteador
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,22 +17,20 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST'], // Métodos permitidos
-  allowedHeaders: ['Content-Type', 'Authorization'], // Headers permitidos
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// Serve static files from the "public" directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Use the router for handling routes
+// Registra o roteador principal
 app.use('/', indexRouter);
 
-// Catch-all route for handling 404 errors
-app.use((req, res, next) => {
+// Catch-all para 404
+app.use((req, res) => {
   console.error(`Rota não encontrada: ${req.method} ${req.originalUrl}`);
-  res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
+  res.status(404).json({ error: 'Rota não encontrada' });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
+// Inicia o servidor
+app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/`);
 });
