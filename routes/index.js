@@ -109,7 +109,7 @@ router.post('/generate-image', async (req, res) => {
 
     // Upload para o Supabase
     const publicUrl = await uploadToSupabase(processedImage, fileName);
-
+    const arrayStyles = Array.isArray(styles) ? styles : [styles]
     const { data, error } = await supabase
     .from('messages')
     .insert([
@@ -119,7 +119,7 @@ router.post('/generate-image', async (req, res) => {
         category,
         recipient,
         gender,
-        styles,
+        styles: arrayStyles,
         type,
         created_at: new Date().toISOString(),
       },
