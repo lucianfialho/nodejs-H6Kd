@@ -46,6 +46,7 @@ router.post('/generate-image', async (req, res) => {
     })
 
     const openaidata = await openAIResponse.json()
+    console.log(openaidata)
     const message = openaidata.choices[0].message.content
 
     const imageUrl = 'https://picsum.photos/600/500.webp';
