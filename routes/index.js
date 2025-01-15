@@ -20,7 +20,7 @@ router.post('/generate-image', async (req, res) => {
     }
 
     const basePrompt = `
-      Create a short and inspiring message of ${type} in Portuguese (Brazil) for a ${recipient} on the occasion: ${category}. 
+      Create a short and inspiring message of ${type} in Portuguese (Brazil) for a ${recipient} on the occasion: ${theme}. 
       Using this predefinitions ${styles.split(',').join(', ')} options set by user to context message.
       The message should:
         - Contain between 30 and 50 words.
@@ -118,7 +118,7 @@ router.post('/generate-image', async (req, res) => {
         {
           message,
           image_url: publicUrl,
-          category,
+          category: theme,
           recipient,
           styles: arrayStyles,
           type,
