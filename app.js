@@ -6,7 +6,7 @@ const indexRouter = require('./routes/index'); // Importa o roteador
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const allowedOrigins = ['https://www.mensagempara.com.br'];
+const allowedOrigins = ['https://www.mensagempara.com.br', 'http://localhost:3000'];
 
 app.use(express.json());
 app.use(cors({
