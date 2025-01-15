@@ -1,33 +1,32 @@
 const express = require('express');
-
 const sharp = require('sharp');
 const router = express.Router();
 const crypto = require("crypto");
 const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config()
+require('dotenv').config();
 
 const supabase = createClient(
-  process.env.SUPABASE_URL, // URL do Supabase
-  process.env.SUPABASE_SERVICE_ROLE_KEY // Chave de Serviço do Supabase
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
 router.post('/generate-image', async (req, res) => {
   try {
-    const { category, recipient, gender, styles, type } = req.body;
+    const { category, recipient, styles, type } = req.body;
 
-    if (!category || !recipient || !gender || !styles || !type) {
+    if (!category || !recipient || !styles || !type) {
       return res.status(400).json({ error: 'Todos os parâmetros são obrigatórios.' });
     }
 
     const basePrompt = `
-      Create a short and inspiring message of ${type} in Portuguese (Brazil) for a gender: ${gender} ${recipient} on the occasion: ${category}. 
-      Using this predefinitions ${styles.split(',').join(' ,')} options set by user to context message
+      Create a short and inspiring message of ${type} in Portuguese (Brazil) for a ${recipient} on the occasion: ${category}. 
+      Using this predefinitions ${styles.split(',').join(', ')} options set by user to context message.
       The message should:
         - Contain between 30 and 50 words.
         - Convey positivity, gratitude, hope, and encouragement.
         - Be culturally appropriate and aligned with Brazilian norms for the occasion.
         - Use a warm and uplifting tone, similar to: "Bom dia! Feliz é aquele que tem gratidão por tudo que conquistou, esperança para sonhar cada vez mais alto e força para lutar pelos seus objetivos! Mantenha a fé, a humildade e o amor acima de todas as coisas!"
-    `
+    `;
 
     const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -43,11 +42,10 @@ router.post('/generate-image', async (req, res) => {
         }],
         max_tokens: 200
       })
-    })
+    });
 
-    const openaidata = await openAIResponse.json()
-    console.log(openaidata)
-    const message = openaidata.choices[0].message.content
+    const openaidata = await openAIResponse.json();
+    const message = openaidata.choices[0].message.content;
 
     const imageUrl = 'https://picsum.photos/600/500.webp';
     const response = await fetch(imageUrl);
@@ -59,26 +57,25 @@ router.post('/generate-image', async (req, res) => {
     const arrayBuffer = await response.arrayBuffer();
     const imageBuffer = Buffer.from(arrayBuffer);
 
-
     function splitTextIntoLines(text, maxCharsPerLine) {
-      const words = text.split(' ')
-      const lines = []
-      let currentLine = ''
+      const words = text.split(' ');
+      const lines = [];
+      let currentLine = '';
 
       words.forEach((word) => {
         if ((currentLine + word).length > maxCharsPerLine) {
-          lines.push(currentLine.trim())
-          currentLine = word + ' '
+          lines.push(currentLine.trim());
+          currentLine = word + ' ';
         } else {
-          currentLine += word + ' '
+          currentLine += word + ' ';
         }
-      })
+      });
 
       if (currentLine.trim().length > 0) {
-        lines.push(currentLine.trim())
+        lines.push(currentLine.trim());
       }
 
-      return lines
+      return lines;
     }
 
     const processedImage = await sharp(imageBuffer)
@@ -109,35 +106,31 @@ router.post('/generate-image', async (req, res) => {
       .toFormat('jpg')
       .toBuffer();
 
-    // Nome do arquivo com timestamp e hash
     const fileName = `${crypto.randomUUID()}.jpg`;
 
-    // Upload para o Supabase
     const publicUrl = await uploadToSupabase(processedImage, fileName);
-    const arrayStyles = Array.isArray(styles) ? styles : [styles]
+
+    const arrayStyles = Array.isArray(styles) ? styles : [styles];
     const { data, error } = await supabase
-    .from('messages')
-    .insert([
-      {
-        message,
-        image_url: publicUrl,
-        category,
-        recipient,
-        gender,
-        styles: arrayStyles,
-        type,
-        created_at: new Date().toISOString(),
-      },
-    ]);
+      .from('messages')
+      .insert([
+        {
+          message,
+          image_url: publicUrl,
+          category,
+          recipient,
+          styles: arrayStyles,
+          type,
+          created_at: new Date().toISOString(),
+        },
+      ]);
 
-  if (error) {
-    throw new Error(`Erro ao salvar na tabela messages: ${error.message}`);
-  }
+    if (error) {
+      throw new Error(`Erro ao salvar na tabela messages: ${error.message}`);
+    }
 
-
-      
     res.status(200).json({ message, imageUrl: publicUrl, data });
-} catch (error) {
+  } catch (error) {
     console.error('Erro ao processar a imagem:', error);
     res.status(500).json({ error: 'Erro interno ao gerar a imagem.', message: error.message });
   }
@@ -145,13 +138,12 @@ router.post('/generate-image', async (req, res) => {
 
 async function uploadToSupabase(imageBuffer, fileName) {
   const { data, error } = await supabase.storage
-    .from('mensagempara') // Substitua pelo nome do bucket
+    .from('mensagempara')
     .upload(`images/${fileName}`, imageBuffer, {
       contentType: 'image/jpeg',
       upsert: false,
     });
-  
-    console.log(data)
+
   if (error) {
     throw new Error(`Erro ao salvar no Supabase: ${error.message}`);
   }
