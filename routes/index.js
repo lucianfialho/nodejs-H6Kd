@@ -26,7 +26,7 @@ router.post('/generate-image', async (req, res) => {
         - Contain between 30 and 50 words.
         - Convey positivity, gratitude, hope, and encouragement.
         - Be culturally appropriate and aligned with Brazilian norms for the occasion.
-        - Use a warm and uplifting tone, similar to: "Bom dia! Feliz é aquele que tem gratidão por tudo que conquistou, esperança para sonhar cada vez mais alto e força para lutar pelos seus objetivos! Mantenha a fé, a humildade e o amor acima de todas as coisas!"
+        - Use a warm and uplifting tone, similar to: "Feliz é aquele que tem gratidão por tudo que conquistou, esperança para sonhar cada vez mais alto e força para lutar pelos seus objetivos! Mantenha a fé, a humildade e o amor acima de todas as coisas!"
     `;
 
     const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
